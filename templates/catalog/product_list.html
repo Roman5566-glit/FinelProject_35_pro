@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Каталог
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="mb-4">
+        Каталог товаров
+    </h1>
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+            <form method="get">
+
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control mb-3"
+                    placeholder="Поиск товаров..."
+                    value="{{ request.GET.q }}"
+                >
+
+                <select
+                    name="category"
+                    class="form-select mb-3"
+                >
+                    <option value="">
+                        Все категории
+                    </option>
+
+                    {% for category in categories %}
+
+                        <option
+                            value="{{ category.slug }}"
+                            {% if request.GET.category == category.slug %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ category.name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <select
+                    name="brand"
+                    class="form-select mb-3"
+                >
+                    <option value="">
+                        Все бренды
+                    </option>
+
+                    {% for brand in brands %}
+
+                        <option
+                            value="{{ brand.slug }}"
+                            {% if request.GET.brand == brand.slug %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ brand.name }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <select
+                    name="sort"
+                    class="form-select mb-3"
+                >
+                    <option value="">
+                        Сортировка
+                    </option>
+
+                    <option value="price_asc">
+                        Цена ↑
+                    </option>
+
+                    <option value="price_desc">
+                        Цена ↓
+                    </option>
+
+                    <option value="popular">
+                        Популярные
+                    </option>
+
+                    <option value="new">
+                        Новинки
+                    </option>
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary w-100"
+                >
+                    Найти
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="col-md-9">
+
+            <div class="row">
+
+                {% for product in products %}
+
+                    <div class="col-md-4 mb-4">
+
+                        {% include 'includes/product_card.html' %}
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="col-12">
+
+                        <div class="alert alert-warning">
+
+                            Товары не найдены.
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% if is_paginated %}
+
+            <nav class="mt-4">
+
+                <ul class="pagination justify-content-center">
+
+                    {% if page_obj.has_previous %}
+
+                        <li class="page-item">
+
+                            <a
+                                class="page-link"
+                                href="?page={{ page_obj.previous_page_number }}"
+                            >
+                                Назад
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+
+                            <a
+                                class="page-link"
+                                href="?page={{ num }}"
+                            >
+                                {{ num }}
+                            </a>
+
+                        </li>
+
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+
+                        <li class="page-item">
+
+                            <a
+                                class="page-link"
+                                href="?page={{ page_obj.next_page_number }}"
+                            >
+                                Вперёд
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

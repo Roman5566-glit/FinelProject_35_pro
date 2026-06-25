@@ -1,0 +1,49 @@
+<div class="card h-100 shadow-sm">
+
+    {% if product.main_image %}
+
+        <img
+            src="{{ product.main_image.image.url }}"
+            class="card-img-top"
+            alt="{{ product.name }}"
+            style="height:250px; object-fit:cover;"
+        >
+
+    {% endif %}
+
+    <div class="card-body">
+
+        <h5 class="card-title">
+            <a
+                href="{% url 'product_detail' product.slug %}"
+                class="text-decoration-none"
+            >
+                {{ product.name }}
+            </a>
+        </h5>
+
+        <p class="text-muted">
+            {{ product.brand }}
+        </p>
+
+        {% if product.discount %}
+
+            <p>
+                <del>${{ product.price }}</del>
+            </p>
+
+            <h4 class="text-danger">
+                ${{ product.final_price }}
+            </h4>
+
+        {% else %}
+
+            <h4>
+                ${{ product.price }}
+            </h4>
+
+        {% endif %}
+
+    </div>
+
+</div>

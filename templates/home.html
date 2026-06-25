@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="p-5 mb-5 bg-light rounded-3">
+        <h1>My Shop</h1>
+        <p>Современный интернет-магазин на Django.</p>
+    </div>
+
+    <h2 class="mb-4">
+        Популярные товары
+    </h2>
+
+    <div class="row">
+
+        {% for product in featured_products %}
+
+            <div class="col-md-3 mb-4">
+
+                {% include 'includes/product_card.html' %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

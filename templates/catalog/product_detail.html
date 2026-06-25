@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ product.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row">
+
+        <div class="col-md-6">
+
+            {% if product.main_image %}
+
+            <img
+                src="{{ product.main_image.image.url }}"
+                class="img-fluid rounded shadow"
+                alt="{{ product.name }}"
+            >
+
+            {% else %}
+
+            <div class="border rounded p-5 text-center">
+                Нет фото
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <h1>
+                {{ product.name }}
+            </h1>
+
+            <p class="text-muted">
+                {{ product.brand }}
+            </p>
+
+            <h2 class="text-success">
+                ${{ product.price }}
+            </h2>
+
+            <p>
+                {{ product.description }}
+            </p>
+
+            <p>
+                Остаток:
+                <strong>
+                    {{ product.stock }}
+                </strong>
+            </p>
+
+            <button class="btn btn-primary btn-lg">
+                В корзину
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
