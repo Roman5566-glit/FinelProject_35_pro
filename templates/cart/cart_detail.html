@@ -37,7 +37,27 @@
                 </td>
 
                 <td>
-                    {{ item.quantity }}
+                    <form
+                        method="post"
+                        action="{% url 'cart_update' item.product.id %}"
+                        class="d-flex align-items-center"
+                    >
+                        {% csrf_token %}
+                        <input
+                            type="number"
+                            name="quantity"
+                            value="{{ item.quantity }}"
+                            min="1"
+                            class="form-control me-2"
+                            style="width: 80px;"
+                        >
+                        <button
+                            type="submit"
+                            class="btn btn-primary btn-sm"
+                        >
+                            Обновить
+                        </button>
+                    </form>
                 </td>
 
                 <td>
