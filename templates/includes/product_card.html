@@ -35,6 +35,12 @@
             <h4 class="text-danger">
                 ${{ product.final_price }}
             </h4>
+            <a
+                href="{% url 'cart_add' product.id %}"
+                class="btn btn-primary btn-sm"
+            >
+                В корзину
+            </a>
 
         {% else %}
 
