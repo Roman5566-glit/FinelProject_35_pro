@@ -2,7 +2,8 @@ from django.urls import path
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
 
-from .views import register_view
+from .views import register_view, profile
+
 
 urlpatterns = [
     path(
@@ -24,4 +25,12 @@ urlpatterns = [
         LogoutView.as_view(),
         name='logout'
     ),
+
+    path(
+        'profile/',
+        profile,
+        name='profile'
+    ),
 ]
+
+"""URL patterns for accounts app"""

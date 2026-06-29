@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Оформление заказа
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2>
+        Оформление заказа
+    </h2>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button
+            type="submit"
+            class="btn btn-success"
+        >
+            Подтвердить заказ
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

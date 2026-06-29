@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """Custom user model"""
     phone = models.CharField(
         max_length=20,
         blank=True
@@ -18,4 +19,5 @@ class User(AbstractUser):
     )
 
     def __str__(self):
+        """Return username"""
         return self.username

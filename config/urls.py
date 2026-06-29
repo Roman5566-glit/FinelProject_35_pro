@@ -9,6 +9,7 @@ urlpatterns = [
     path('catalog/', include('catalog.urls')),
     path('cart/', include('cart.urls')),
     path('accounts/', include('accounts.urls')),
+    path('orders/', include('orders.urls')),
 ]
 
 if settings.DEBUG:
@@ -16,3 +17,5 @@ if settings.DEBUG:
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
     )
+
+"""Main URL configuration for project"""

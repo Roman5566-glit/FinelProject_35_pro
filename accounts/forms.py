@@ -5,11 +5,12 @@ from .models import User
 
 
 class RegisterForm(UserCreationForm):
+    """User registration form"""
     email = forms.EmailField()
 
     class Meta:
+        """Meta options for RegisterForm"""
         model = User
-
         fields = (
             'username',
             'email',

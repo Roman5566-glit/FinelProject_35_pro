@@ -39,7 +39,7 @@
                 <td>
                     <form
                         method="post"
-                        action="{% url 'cart_update' item.product.id %}"
+                        action="{% url 'cart:cart_update' item.product.id %}"
                         class="d-flex align-items-center"
                     >
                         {% csrf_token %}
@@ -71,7 +71,7 @@
                 <td>
 
                     <a
-                        href="{% url 'cart_remove' item.product.id %}"
+                        href="{% url 'cart:cart_remove' item.product.id %}" 
                         class="btn btn-danger btn-sm"
                     >
                         Удалить
@@ -100,7 +100,12 @@
     <h4>
         Итого: ${{ cart.get_total_price }}
     </h4>
-
+    <a
+        href="{% url 'order_create' %}" 
+        class="btn btn-success"
+    >
+        Оформить заказ
+    </a>
 </div>
 
 {% endblock %}

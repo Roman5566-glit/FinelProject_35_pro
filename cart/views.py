@@ -1,15 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
-
 from catalog.models import Product
-
 from .cart import Cart
 
 
 def cart_detail(request):
+    """Show cart details"""
     cart = Cart(request)
-
     return render(
         request,
         'cart/cart_detail.html',
@@ -20,46 +18,31 @@ def cart_detail(request):
 
 
 def cart_add(request, product_id):
+    """Add product to cart"""
     cart = Cart(request)
-
-    product = get_object_or_404(
-        Product,
-        id=product_id
-    )
-
+    product = get_object_or_404(Product, id=product_id)
     cart.add(product)
-
-    return redirect('cart_detail')
+    return redirect('cart:cart_detail')
 
 
 def cart_remove(request, product_id):
+    """Remove product from cart"""
     cart = Cart(request)
-
-    product = get_object_or_404(
-        Product,
-        id=product_id
-    )
-
+    product = get_object_or_404(Product, id=product_id)
     cart.remove(product)
-
-    return redirect('cart_detail')
+    return redirect('cart:cart_detail')
 
 
 def cart_update(request, product_id):
+    """Update product quantity"""
     cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
 
-    product = get_object_or_404(
-        Product,
-        id=product_id
-    )
-
-    quantity = int(
-        request.POST.get('quantity', 1)
-    )
+    quantity = int(request.POST.get('quantity', 1))
 
     if quantity > 0:
         cart.update(product, quantity)
     else:
         cart.remove(product)
 
-    return redirect('cart_detail')
+    return redirect('cart:cart_detail')

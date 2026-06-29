@@ -1,70 +1,140 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ product.name }}
+{{ product.name }} — {{ product.brand.name|default:"Каталог" }}
 {% endblock %}
 
 {% block content %}
-
 <div class="container mt-5">
-
     <div class="row">
 
-        <div class="col-md-6">
-
+        <div class="col-md-6 mb-4">
             {% if product.main_image %}
-
-            <img
-                src="{{ product.main_image.image.url }}"
-                class="img-fluid rounded shadow"
-                alt="{{ product.name }}"
-            >
-
+                <img 
+                    src="{{ product.main_image.image.url }}" 
+                    class="img-fluid rounded shadow w-100" 
+                    alt="{{ product.name }}"
+                    style="max-height: 500px; object-fit: cover;"
+                >
             {% else %}
-
-            <div class="border rounded p-5 text-center">
-                Нет фото
+                <div class="border rounded p-5 text-center bg-light text-muted">
+                    <i class="bi bi-image" style="font-size: 3rem;"></i>
+                    <p class="mt-2">Нет фото товара</p>
+                </div>
+            {% endif %}
+            
             </div>
 
+        <div class="col-md-6">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}">Каталог</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ product.category.name }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="display-5 fw-bold">{{ product.name }}</h1>
+            
+            {% if product.brand %}
+                <p class="text-muted fs-5 mb-3">Бренд: <strong>{{ product.brand.name }}</strong></p>
             {% endif %}
 
-        </div>
+            <div class="mb-3">
+                {% if product.discount %}
+                    <h2 class="text-success d-inline me-2">${{ product.final_price|floatformat:2 }}</h2>
+                    <span class="text-decoration-line-through text-muted fs-5">${{ product.price }}</span>
+                    <span class="badge bg-danger ms-2">-{{ product.discount }}%</span>
+                {% else %}
+                    <h2 class="text-success">${{ product.price }}</h2>
+                {% endif %}
+            </div>
+
+            <p class="lead">{{ product.description|linebreaks }}</p>
+
+            <div class="mb-4">
+                <span class="text-muted">Просмотры: {{ product.views }} | </span>
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success">В наличии (остаток: {{ product.stock }})</span>
+                {% else %}
+                    <span class="badge bg-danger">Нет в наличии</span>
+                {% endif %}
+            </div>
+
+            {% if product.stock > 0 %}
+                <form action="{% url 'cart:cart_add' product.id %}" method="post" class="row g-3 align-items-center mb-4">
+                    {% csrf_token %}
+                    <div class="col-auto">
+                        <label for="quantity" class="visually-hidden">Количество</label>
+                        <input 
+                            type="number" 
+                            name="quantity" 
+                            id="quantity" 
+                            class="form-control" 
+                            value="1" 
+                            min="1" 
+                            max="{{ product.stock }}"
+                            style="width: 80px;"
+                        >
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-cart-plus"></i> В корзину
+                        </button>
+                    </div>
+                </form>
+            {% else %}
+                <button class="btn btn-secondary btn-lg mb-4" disabled>Товар раскуплен</button>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <h3 class="mb-4">Отзывы покупателей</h3>
+
+            {% for review in reviews %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="card-title mb-0 fw-bold">{{ review.user.username }}</h6>
+                            <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+                        </div>
+                        <div class="text-warning mb-2">
+                            {% if review.rating == 5 %}⭐⭐⭐⭐⭐{% elif review.rating == 4 %}⭐⭐⭐⭐{% elif review.rating == 3 %}⭐⭐⭐{% elif review.rating == 2 %}⭐⭐{% else %}⭐{% endif %}
+                        </div>
+                        <p class="card-text text-secondary">{{ review.text }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted bg-light p-3 rounded">У этого товара пока нет отзывов. Станьте первым!</p>
+            {% endfor %}
+
+            <div class="mt-4 p-4 border rounded bg-light">
+                <h4 class="mb-3">Оставить отзыв</h4>
+                
+                {% if request.user.is_authenticated %}
+                    <form action="{% url 'catalog:product_detail' product.slug %}" method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ review_form.rating.label }}</label>
+                            {{ review_form.rating }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ review_form.text.label }}</label>
+                            {{ review_form.text }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-outline-dark">Отправить отзыв</button>
+                    </form>
+                {% else %}
+                    <p class="mb-0">
+                        Только авторизованные пользователи могут оставлять отзывы. 
+                        <a href="{% url 'login' %}">Войдите в аккаунт</a>.
+                    </p>
+                {% endif %}
+            </div>
 
         </div>
-
-        <div class="col-md-6">
-
-            <h1>
-                {{ product.name }}
-            </h1>
-
-            <p class="text-muted">
-                {{ product.brand }}
-            </p>
-
-            <h2 class="text-success">
-                ${{ product.price }}
-            </h2>
-
-            <p>
-                {{ product.description }}
-            </p>
-
-            <p>
-                Остаток:
-                <strong>
-                    {{ product.stock }}
-                </strong>
-            </p>
-
-            <button class="btn btn-primary btn-lg">
-                В корзину
-            </button>
-
-        </div>
-
     </div>
-
 </div>
-
 {% endblock %}
