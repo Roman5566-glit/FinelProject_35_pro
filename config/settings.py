@@ -11,7 +11,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.render.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'finelproject-35-pro.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
