@@ -1,73 +1,172 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Профиль
+Личный кабинет
 {% endblock %}
 
 {% block content %}
 
 <div class="container mt-5">
 
-    <h2>
+    <h2 class="mb-4">
         Личный кабинет
     </h2>
 
-    <hr>
+    <div class="card shadow-sm mb-5">
 
-    <p>
-        <strong>Пользователь:</strong>
-        {{ request.user.username }}
-    </p>
+        <div class="card-body">
 
-    <p>
-        <strong>Email:</strong>
-        {{ request.user.email }}
-    </p>
+            <h4 class="mb-3">
+                Информация о пользователе
+            </h4>
 
-    <p>
-        <strong>Телефон:</strong>
-        {{ request.user.phone }}
-    </p>
+            <p>
+                <strong>Имя пользователя:</strong>
+                {{ request.user.username }}
+            </p>
 
-    <hr>
+            <p>
+                <strong>Email:</strong>
+                {{ request.user.email }}
+            </p>
 
-    <h3>
-        Мои заказы
-    </h3>
+            <p>
+                <strong>Телефон:</strong>
+                {{ request.user.phone|default:"Не указан" }}
+            </p>
 
-    <table class="table">
+            <p>
+                <strong>Город:</strong>
+                {{ request.user.city|default:"Не указан" }}
+            </p>
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Дата</th>
-                <th>Статус</th>
-            </tr>
-        </thead>
+            <p>
+                <strong>Дата регистрации:</strong>
+                {{ request.user.created_at|date:"d.m.Y" }}
+            </p>
 
-        <tbody>
+        </div>
 
-        {% for order in orders %}
+    </div>
 
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.created_at }}</td>
-                <td>{{ order.get_status_display }}</td>
-            </tr>
+    <div class="d-flex justify-content-between align-items-center mb-3">
 
-        {% empty %}
+        <h3>
+            История заказов
+        </h3>
 
-            <tr>
-                <td colspan="3">
-                    Заказов пока нет
-                </td>
-            </tr>
+        <a
+            href="{% url 'order_history' %}"
+            class="btn btn-outline-primary"
+        >
+            Смотреть все →
+        </a>
 
-        {% endfor %}
+    </div>
 
-        </tbody>
+    {% if orders %}
 
-    </table>
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Оплата</th>
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for order in orders %}
+
+                        <tr>
+
+                            <td>
+                                #{{ order.id }}
+                            </td>
+
+                            <td>
+                                {{ order.created_at|date:"d.m.Y H:i" }}
+                            </td>
+
+                            <td>
+
+                                {% if order.status == 'new' %}
+                                    <span class="badge bg-warning text-dark">Новый</span>
+
+                                {% elif order.status == 'processing' %}
+                                    <span class="badge bg-info">В обработке</span>
+
+                                {% elif order.status == 'shipped' %}
+                                    <span class="badge bg-primary">Отправлен</span>
+
+                                {% elif order.status == 'completed' %}
+                                    <span class="badge bg-success">Завершён</span>
+
+                                {% else %}
+                                    <span class="badge bg-danger">Отменён</span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if order.paid %}
+
+                                    <span class="badge bg-success">
+                                        Оплачен
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        Не оплачен
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'order_detail' order.id %}"
+                                    class="btn btn-sm btn-primary"
+                                >
+                                    Подробнее
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+
+            Вы еще не оформили ни одного заказа.
+
+        </div>
+
+    {% endif %}
 
 </div>
 

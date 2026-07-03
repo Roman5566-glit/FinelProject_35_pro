@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Заказ #{{ order.id }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="mb-4">
+
+        Заказ #{{ order.id }}
+
+    </h1>
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <p>
+
+                <strong>Дата:</strong>
+
+                {{ order.created_at|date:"d.m.Y H:i" }}
+
+            </p>
+
+            <p>
+
+                <strong>Статус:</strong>
+
+                {{ order.get_status_display }}
+
+            </p>
+
+            <p>
+
+                <strong>Оплачен:</strong>
+
+                {% if order.paid %}
+
+                    <span class="text-success">
+
+                        Да
+
+                    </span>
+
+                {% else %}
+
+                    <span class="text-danger">
+
+                        Нет
+
+                    </span>
+
+                {% endif %}
+
+            </p>
+
+            <p>
+
+                <strong>Получатель:</strong>
+
+                {{ order.first_name }} {{ order.last_name }}
+
+            </p>
+
+            <p>
+
+                <strong>Телефон:</strong>
+
+                {{ order.phone }}
+
+            </p>
+
+            <p>
+
+                <strong>Адрес:</strong>
+
+                {{ order.city }}, {{ order.address }}
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <h3 class="mb-3">
+
+        Товары
+
+    </h3>
+
+    <table class="table table-bordered align-middle">
+
+        <thead class="table-light">
+
+            <tr>
+
+                <th>Товар</th>
+
+                <th>Цена</th>
+
+                <th>Количество</th>
+
+                <th>Сумма</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for item in order.items.all %}
+
+                <tr>
+
+                    <td>
+
+                        {{ item.product.name }}
+
+                    </td>
+
+                    <td>
+
+                        ${{ item.price }}
+
+                    </td>
+
+                    <td>
+
+                        {{ item.quantity }}
+
+                    </td>
+
+                    <td>
+
+                        ${{ item.get_cost }}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <a
+        href="{% url 'order_history' %}"
+        class="btn btn-secondary"
+    >
+        ← Назад к заказам
+    </a>
+
+</div>
+
+{% endblock %}

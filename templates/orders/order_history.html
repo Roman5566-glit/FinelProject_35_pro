@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Мои заказы
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h1 class="mb-4">
+        Мои заказы
+    </h1>
+
+    {% if orders %}
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th>Оплачен</th>
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for order in orders %}
+
+                        <tr>
+
+                            <td>
+                                #{{ order.id }}
+                            </td>
+
+                            <td>
+                                {{ order.created_at|date:"d.m.Y H:i" }}
+                            </td>
+
+                            <td>
+                                {{ order.get_status_display }}
+                            </td>
+
+                            <td>
+
+                                {% if order.paid %}
+
+                                    <span class="badge bg-success">
+                                        Да
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+                                        Нет
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'order_detail' order.id %}"
+                                    class="btn btn-primary btn-sm"
+                                >
+                                    Подробнее
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-info">
+
+            У вас пока нет заказов.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
