@@ -1,8 +1,13 @@
-body{
-    background: #f8f9fa;
-
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
+body {
+    background: #f8f9fa;
+    display: grid;
+    grid-template-rows: auto 1fr auto; 
+}
 /* HERO */
 
 .hero{

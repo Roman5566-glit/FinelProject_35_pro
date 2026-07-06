@@ -5,107 +5,83 @@
 {% endblock %}
 
 {% block content %}
+<div class="container mt-5" style="min-height: 60vh;">
 
-<div class="container mt-5">
+    <!-- Проверяем, есть ли вообще товары в корзине -->
+    {% if cart %}
+        <h1>Корзина</h1>
 
-    <h1>
-        Корзина
-    </h1>
-
-    <table class="table">
-
-        <thead>
-
-            <tr>
-                <th>Товар</th>
-                <th>Количество</th>
-                <th>Цена</th>
-                <th>Сумма</th>
-                <th></th>
-            </tr>
-
-        </thead>
-
-        <tbody>
-
-        {% for item in cart %}
-
-            <tr>
-
-                <td>
-                    {{ item.product.name }}
-                </td>
-
-                <td>
-                    <form
-                        method="post"
-                        action="{% url 'cart:cart_update' item.product.id %}"
-                        class="d-flex align-items-center"
-                    >
-                        {% csrf_token %}
-                        <input
-                            type="number"
-                            name="quantity"
-                            value="{{ item.quantity }}"
-                            min="1"
-                            class="form-control me-2"
-                            style="width: 80px;"
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in cart %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>
+                        <form
+                            method="post"
+                            action="{% url 'cart:cart_update' item.product.id %}"
+                            class="d-flex align-items-center"
                         >
-                        <button
-                            type="submit"
-                            class="btn btn-primary btn-sm"
+                            {% csrf_token %}
+                            <input
+                                type="number"
+                                name="quantity"
+                                value="{{ item.quantity }}"
+                                min="1"
+                                class="form-control me-2"
+                                style="width: 80px;"
+                            >
+                            <button
+                                type="submit"
+                                class="btn btn-primary btn-sm"
+                            >
+                                Обновить
+                            </button>
+                        </form>
+                    </td>
+                    <td>${{ item.price }}</td>
+                    <td>${{ item.total_price }}</td>
+                    <td>
+                        <a
+                            href="{% url 'cart:cart_remove' item.product.id %}" 
+                            class="btn btn-danger btn-sm"
                         >
-                            Обновить
-                        </button>
-                    </form>
-                </td>
+                            Удалить
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-                <td>
-                    ${{ item.price }}
-                </td>
+        <h4>Итого: ${{ cart.get_total_price }}</h4>
+        <a
+            href="{% url 'order_create' %}" 
+            class="btn btn-success"
+        >
+            Оформить заказ
+        </a>
 
-                <td>
-                    ${{ item.total_price }}
-                </td>
+    {% else %}
+        <!-- ЭКРАН ДЛЯ ПУСТОЙ КОРЗИНЫ -->
+        <!-- Классы py-5 и my-5 создадут искусственную высоту и прижмут футер вниз -->
+        <div class="text-center py-5 my-5">
+            <h1 class="display-4 text-muted mb-4">Ваша корзина пуста</h1>
+            <p class="lead text-secondary mb-5">Вы ещё не добавили ни одного товара в корзину.</p>
+            <a href="{% url 'catalog:product_list' %}" class="btn btn-primary btn-lg px-5">
+                Перейти в каталог
+            </a>
+        </div>
+    {% endif %}
 
-                <td>
-
-                    <a
-                        href="{% url 'cart:cart_remove' item.product.id %}" 
-                        class="btn btn-danger btn-sm"
-                    >
-                        Удалить
-                    </a>
-
-                </td>
-
-            </tr>
-
-        {% empty %}
-
-            <tr>
-
-                <td colspan="5">
-                    Корзина пуста
-                </td>
-
-            </tr>
-
-        {% endfor %}
-
-        </tbody>
-
-    </table>
-
-    <h4>
-        Итого: ${{ cart.get_total_price }}
-    </h4>
-    <a
-        href="{% url 'order_create' %}" 
-        class="btn btn-success"
-    >
-        Оформить заказ
-    </a>
 </div>
-
 {% endblock %}
