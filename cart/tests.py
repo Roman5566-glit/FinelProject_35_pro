@@ -39,7 +39,7 @@ class CartTest(TestCase):
         """Test adding product to cart"""
         response = self.client.get(
             reverse(
-                'cart_add',
+                'cart:cart_add',
                 args=[self.product.id]
             )
         )
